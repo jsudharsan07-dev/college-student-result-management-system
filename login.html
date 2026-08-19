@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block auth_content %}
+<style>
+.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); position: relative; overflow: hidden; }
+.login-page::before {
+  content: ''; position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,139,253,0.08) 0%, transparent 70%);
+  top: -200px; right: -200px; pointer-events: none;
+}
+.login-page::after {
+  content: ''; position: absolute; width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(188,140,255,0.06) 0%, transparent 70%);
+  bottom: -200px; left: -200px; pointer-events: none;
+}
+.login-box { width: 100%; max-width: 420px; padding: 20px; position: relative; z-index: 1; }
+.login-header { text-align: center; margin-bottom: 32px; }
+.login-logo {
+  width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent2), var(--accent3));
+  border-radius: 18px; display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 800; color: #fff; margin: 0 auto 16px;
+  box-shadow: 0 8px 32px rgba(56,139,253,0.3);
+}
+.login-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--text2); }
+.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
+.demo-accounts { margin-top: 20px; background: var(--surface2); border-radius: 10px; padding: 14px; }
+.demo-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); margin-bottom: 10px; }
+.demo-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.demo-row:last-child { border-bottom: none; }
+.demo-role { font-weight: 600; }
+</style>
+<div class="login-page">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="login-logo">CR</div>
+      <div class="login-title">College Result Management</div>
+      <div class="login-sub">Secure Academic Portal</div>
+    </div>
+    <div class="login-card">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+      <form method="POST">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="Enter your username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;">
+          🔐 Sign In
+        </button>
+      </form>
+      <div class="demo-accounts">
+        <div class="demo-title">Demo Credentials</div>
+        <div class="demo-row"><span class="demo-role" style="color:var(--admin)">⚙️ Admin</span><span><code>admin</code> / <code>admin123</code></span></div>
+        <div class="demo-row"><span class="demo-role" style="color:var(--faculty)">📚 Faculty</span><span><code>faculty1</code> / <code>faculty123</code></span></div>
+        <div class="demo-row"><span class="demo-role" style="color:var(--student)">🎓 Student</span><span><code>student1</code> / <code>student123</code></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
