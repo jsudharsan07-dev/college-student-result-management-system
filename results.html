@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}My Results{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
+  <div>
+    <div class="page-title">📊 My Results</div>
+    <div class="page-subtitle">Published academic results</div>
+  </div>
+  <a href="{{ url_for('student_download_result') }}" class="btn btn-primary">⬇️ Download CSV</a>
+</div>
+
+{% if student and results %}
+  {% set total_gp = results|sum(attribute='grade_points') %}
+  {% set cgpa = (total_gp / results|length)|round(2) %}
+  
+  <div class="card" style="background:linear-gradient(135deg,rgba(46,160,67,0.1),rgba(56,139,253,0.05));border-color:rgba(46,160,67,0.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:13px;color:var(--text2);">{{ student.user.full_name }} | {{ student.roll_number }} | {{ student.department }}</div>
+        <div style="font-size:28px;font-weight:700;margin-top:4px;">CGPA: <span style="color:var(--accent);">{{ cgpa }}</span></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;color:var(--text2);">Total Subjects</div>
+        <div style="font-size:24px;font-weight:700;">{{ results|length }}</div>
+      </div>
+    </div>
+  </div>
+
+  {% set exam_groups = {} %}
+  {% for r in results %}
+    {% if r.exam.name not in exam_groups %}
+      {% set _ = exam_groups.update({r.exam.name: []}) %}
+    {% endif %}
+  {% endfor %}
+  
+  {% for exam in exams %}
+  {% set exam_results = results|selectattr('exam_id', '==', exam.id)|list %}
+  {% if exam_results %}
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">{{ exam.name }}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">
+          <span class="badge badge-blue">{{ exam.exam_type }}</span>
+          <span style="margin-left:8px;">Max Marks: {{ exam.max_marks }}</span>
+        </div>
+      </div>
+      {% set exam_gp = exam_results|sum(attribute='grade_points') %}
+      <div style="text-align:right;">
+        <div style="font-size:12px;color:var(--text2);">Exam GPA</div>
+        <div style="font-size:22px;font-weight:700;color:var(--accent2);">{{ (exam_gp / exam_results|length)|round(2) }}</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Subject Code</th><th>Subject Name</th><th>Credits</th><th>Marks</th><th>%</th><th>Grade</th><th>Points</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          {% for r in exam_results %}
+          <tr>
+            <td><code>{{ r.subject.code }}</code></td>
+            <td>{{ r.subject.name }}</td>
+            <td>{{ r.subject.credits }}</td>
+            <td>{{ r.marks_obtained }}/{{ exam.max_marks }}</td>
+            <td>{{ "%.1f"|format((r.marks_obtained/exam.max_marks)*100) }}%</td>
+            <td><span class="grade-{{ r.grade|replace('+','p') }}" style="font-size:16px;">{{ r.grade }}</span></td>
+            <td>{{ r.grade_points }}</td>
+            <td>
+              {% if r.grade == 'F' %}
+                <span class="badge badge-red">FAIL</span>
+              {% else %}
+                <span class="badge badge-green">PASS</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+
+{% elif student %}
+  <div class="card" style="text-align:center;padding:48px;">
+    <div style="font-size:48px;margin-bottom:16px;">📭</div>
+    <div style="font-size:18px;font-weight:600;margin-bottom:8px;">No Results Published Yet</div>
+    <div style="color:var(--text2);font-size:14px;">Results will appear here once your faculty enters marks and the admin publishes the exam.</div>
+  </div>
+{% endif %}
+{% endblock %}
