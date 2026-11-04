@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Faculty{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
+  <div>
+    <div class="page-title">👨‍🏫 Faculty</div>
+    <div class="page-subtitle">Manage faculty members</div>
+  </div>
+  <a href="{{ url_for('admin_add_faculty') }}" class="btn btn-primary">+ Add Faculty</a>
+</div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Employee ID</th><th>Name</th><th>Email</th><th>Department</th><th>Designation</th></tr></thead>
+      <tbody>
+        {% for faculty, user in faculty_list %}
+        <tr>
+          <td><code>{{ faculty.employee_id }}</code></td>
+          <td><strong>{{ user.full_name }}</strong></td>
+          <td style="color:var(--text2)">{{ user.email }}</td>
+          <td>{{ faculty.department }}</td>
+          <td><span class="badge badge-purple">{{ faculty.designation or 'Faculty' }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="text-align:center;color:var(--text2);padding:32px;">No faculty added yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
