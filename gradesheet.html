@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Grade Sheet{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">📋 Grade Sheet</div>
+  <div class="page-subtitle">View consolidated grade report for a subject</div>
+</div>
+
+<div class="card">
+  <form method="GET">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Subject</label>
+        <select name="subject_id">
+          <option value="">— Select Subject —</option>
+          {% for s in subjects %}
+          <option value="{{ s.id }}" {% if selected_subject == s.id|string %}selected{% endif %}>
+            [{{ s.code }}] {{ s.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Exam</label>
+        <select name="exam_id">
+          <option value="">— Select Exam —</option>
+          {% for e in exams %}
+          <option value="{{ e.id }}" {% if selected_exam == e.id|string %}selected{% endif %}>{{ e.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Generate Grade Sheet →</button>
+  </form>
+</div>
+
+{% if grade_data %}
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-title">
+        Grade Sheet — {{ subject_obj.name }} | {{ exam_obj.name }}
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px;">
+        Total Students: {{ grade_data|length }} | Max Marks: {{ exam_obj.max_marks }}
+      </div>
+    </div>
+  </div>
+  
+  {% set pass_count = grade_data|selectattr('grade', '!=', 'F')|list|length %}
+  {% set fail_count = grade_data|selectattr('grade', '==', 'F')|list|length %}
+  <div style="display:flex;gap:16px;margin-bottom:20px;">
+    <span class="badge badge-green">✅ Pass: {{ pass_count }}</span>
+    <span class="badge badge-red">❌ Fail: {{ fail_count }}</span>
+    {% if grade_data %}
+    <span class="badge badge-blue">📊 Avg: {{ "%.1f"|format(grade_data|sum(attribute='marks_obtained') / grade_data|length) }}</span>
+    {% endif %}
+  </div>
+  
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Roll No</th><th>Student Name</th>
+          <th>Marks / {{ exam_obj.max_marks }}</th><th>%</th><th>Grade</th><th>Grade Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in grade_data %}
+        <tr>
+          <td style="color:var(--text3)">{{ loop.index }}</td>
+          <td><code>{{ r.student.roll_number }}</code></td>
+          <td>{{ r.student.user.full_name }}</td>
+          <td>{{ r.marks_obtained }}</td>
+          <td>{{ "%.1f"|format((r.marks_obtained / exam_obj.max_marks) * 100) }}%</td>
+          <td><span class="grade-{{ r.grade|replace('+','p') }}">{{ r.grade }}</span></td>
+          <td>{{ r.grade_points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% elif selected_subject and selected_exam %}
+<div class="card"><p style="color:var(--text2);">No marks entered for this combination yet.</p></div>
+{% endif %}
+{% endblock %}
