@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">🎓 Welcome, {{ session.full_name }}</div>
+  <div class="page-subtitle">Student Academic Portal — {{ student.department if student else '' }}</div>
+</div>
+
+{% if student %}
+<div class="card" style="background:linear-gradient(135deg,rgba(46,160,67,0.1),rgba(56,139,253,0.05));border-color:rgba(46,160,67,0.3);">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;">
+    <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Roll Number</div><div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-top:4px;">{{ student.roll_number }}</div></div>
+    <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Department</div><div style="font-size:16px;font-weight:600;margin-top:4px;">{{ student.department }}</div></div>
+    <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Semester</div><div style="font-size:16px;font-weight:600;margin-top:4px;">Semester {{ student.semester }}</div></div>
+    <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;">Batch</div><div style="font-size:16px;font-weight:600;margin-top:4px;">{{ student.batch_year }}</div></div>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card" style="--accent-color: var(--accent)">
+    <div class="stat-icon">📊</div>
+    <div class="stat-value">{{ stats.results }}</div>
+    <div class="stat-label">Results Available</div>
+  </div>
+  <div class="stat-card" style="--accent-color: var(--accent2)">
+    <div class="stat-icon">🏆</div>
+    <div class="stat-value" style="font-size:24px;">{{ stats.cgpa }}</div>
+    <div class="stat-label">Current CGPA</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:12px;">🚀 Quick Access</div>
+  <div style="display:flex;gap:10px;">
+    <a href="{{ url_for('student_results') }}" class="btn btn-primary">📊 View My Results</a>
+    <a href="{{ url_for('student_download_result') }}" class="btn btn-ghost">⬇️ Download Report (CSV)</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
