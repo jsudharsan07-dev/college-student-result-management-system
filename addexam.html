@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Schedule Exam{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">📝 Schedule New Exam</div>
+</div>
+<div class="card" style="max-width:600px;">
+  <form method="POST">
+    <div class="form-group">
+      <label>Exam Name</label>
+      <input type="text" name="name" required placeholder="Mid Semester Exam 2024">
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Exam Type</label>
+        <select name="exam_type" required>
+          <option value="internal">Internal</option>
+          <option value="external">External</option>
+          <option value="midterm">Mid Term</option>
+          <option value="final">Final</option>
+          <option value="practical">Practical</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <select name="department" required>
+          <option value="">Select</option>
+          <option>Computer Science</option>
+          <option>Electronics</option>
+          <option>Mechanical</option>
+          <option>Civil</option>
+          <option>Information Technology</option>
+          <option>Mathematics</option>
+          <option>Physics</option>
+          <option>All Departments</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Semester</label>
+        <select name="semester" required>
+          {% for i in range(1, 9) %}
+          <option value="{{ i }}">Semester {{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Academic Year</label>
+        <input type="number" name="year" required value="2024" min="2020" max="2030">
+      </div>
+      <div class="form-group">
+        <label>Maximum Marks</label>
+        <input type="number" name="max_marks" required value="100" min="1">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button type="submit" class="btn btn-primary">✅ Create Exam</button>
+      <a href="{{ url_for('admin_exams') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
