@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Subjects{% endblock %}
+{% block content %}
+<div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
+  <div>
+    <div class="page-title">📖 Subjects</div>
+    <div class="page-subtitle">Manage subject catalogue</div>
+  </div>
+  <a href="{{ url_for('admin_add_subject') }}" class="btn btn-primary">+ Add Subject</a>
+</div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Code</th><th>Subject Name</th><th>Department</th><th>Semester</th><th>Credits</th><th>Faculty</th></tr></thead>
+      <tbody>
+        {% for subject in subjects %}
+        <tr>
+          <td><code>{{ subject.code }}</code></td>
+          <td><strong>{{ subject.name }}</strong></td>
+          <td>{{ subject.department }}</td>
+          <td><span class="badge badge-blue">Sem {{ subject.semester }}</span></td>
+          <td>{{ subject.credits }}</td>
+          <td>{% if subject.faculty %}<span class="badge badge-purple">{{ subject.faculty.user.full_name }}</span>{% else %}<span style="color:var(--text3)">—</span>{% endif %}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" style="text-align:center;color:var(--text2);padding:32px;">No subjects added.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
