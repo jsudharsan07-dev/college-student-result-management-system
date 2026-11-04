@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Faculty Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">Welcome, {{ session.full_name }}</div>
+  <div class="page-subtitle">Faculty Portal — {{ faculty.department if faculty else '' }}</div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card" style="--accent-color: var(--accent3)">
+    <div class="stat-icon">📖</div>
+    <div class="stat-value">{{ stats.subjects }}</div>
+    <div class="stat-label">Assigned Subjects</div>
+  </div>
+  <div class="stat-card" style="--accent-color: var(--accent2)">
+    <div class="stat-icon">✏️</div>
+    <div class="stat-value">{{ stats.results_entered }}</div>
+    <div class="stat-label">Results Entered</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <div class="card">
+    <div class="card-header"><div class="card-title">📖 My Subjects</div></div>
+    {% if subjects %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Code</th><th>Subject</th><th>Sem</th></tr></thead>
+        <tbody>
+          {% for s in subjects %}
+          <tr>
+            <td><code>{{ s.code }}</code></td>
+            <td>{{ s.name }}</td>
+            <td><span class="badge badge-blue">Sem {{ s.semester }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="color:var(--text2);font-size:13px;">No subjects assigned yet.</p>
+    {% endif %}
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">🚀 Quick Actions</div></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a href="{{ url_for('faculty_enter_marks') }}" class="btn btn-primary">✏️ Enter / Update Marks</a>
+      <a href="{{ url_for('faculty_grade_sheet') }}" class="btn btn-ghost">📋 View Grade Sheet</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
