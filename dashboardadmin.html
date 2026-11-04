@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">Admin Dashboard</div>
+  <div class="page-subtitle">System overview and quick actions</div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card" style="--accent-color: var(--accent2)">
+    <div class="stat-icon">👥</div>
+    <div class="stat-value">{{ stats.students }}</div>
+    <div class="stat-label">Total Students</div>
+  </div>
+  <div class="stat-card" style="--accent-color: var(--accent3)">
+    <div class="stat-icon">👨‍🏫</div>
+    <div class="stat-value">{{ stats.faculty }}</div>
+    <div class="stat-label">Faculty Members</div>
+  </div>
+  <div class="stat-card" style="--accent-color: var(--accent)">
+    <div class="stat-icon">📖</div>
+    <div class="stat-value">{{ stats.subjects }}</div>
+    <div class="stat-label">Subjects</div>
+  </div>
+  <div class="stat-card" style="--accent-color: var(--warning)">
+    <div class="stat-icon">📝</div>
+    <div class="stat-value">{{ stats.exams }}</div>
+    <div class="stat-label">Exam Schedules</div>
+  </div>
+  <div class="stat-card" style="--accent-color: var(--danger)">
+    <div class="stat-icon">📊</div>
+    <div class="stat-value">{{ stats.results }}</div>
+    <div class="stat-label">Results Entered</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🚀 Quick Actions</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a href="{{ url_for('admin_add_student') }}" class="btn btn-primary">👥 Add New Student</a>
+      <a href="{{ url_for('admin_add_faculty') }}" class="btn btn-ghost">👨‍🏫 Add Faculty Member</a>
+      <a href="{{ url_for('admin_add_subject') }}" class="btn btn-ghost">📖 Add Subject</a>
+      <a href="{{ url_for('admin_add_exam') }}" class="btn btn-ghost">📝 Schedule Exam</a>
+      <a href="{{ url_for('admin_reports') }}" class="btn btn-ghost">📈 View Analytics</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📅 Recent Exam Schedules</div>
+      <a href="{{ url_for('admin_exams') }}" class="btn btn-ghost btn-sm">View All</a>
+    </div>
+    {% if recent_exams %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Exam</th><th>Type</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for exam in recent_exams %}
+          <tr>
+            <td>{{ exam.name }}</td>
+            <td><span class="badge badge-blue">{{ exam.exam_type }}</span></td>
+            <td>
+              {% if exam.is_published %}
+                <span class="badge badge-green">✅ Published</span>
+              {% else %}
+                <span class="badge badge-gray">Draft</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="color:var(--text2);font-size:13px;">No exams scheduled yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
