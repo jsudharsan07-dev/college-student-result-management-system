@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">📈 Analytics & Reports</div>
+  <div class="page-subtitle">Department-wise performance overview</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Department Statistics</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Department</th><th>Total Students</th><th>Results Entered</th><th>Avg Results/Student</th></tr></thead>
+      <tbody>
+        {% for dept in dept_stats %}
+        <tr>
+          <td><strong>{{ dept.name }}</strong></td>
+          <td>{{ dept.students }}</td>
+          <td>{{ dept.results }}</td>
+          <td>
+            {% if dept.students > 0 %}
+              {{ "%.1f"|format(dept.results / dept.students) }}
+            {% else %}0{% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="text-align:center;color:var(--text2);padding:32px;">No data available.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Grade Distribution</div>
+  </div>
+  <div id="grade-chart" style="display:flex;gap:16px;flex-wrap:wrap;padding:8px 0;"></div>
+</div>
+
+<script>
+fetch('/api/stats').then(r => r.json()).then(data => {
+  const grades = data.grade_distribution;
+  const colors = {'O':'#56d364','A+':'#79c0ff','A':'#388bfd','B+':'#bc8cff','B':'#e3b341','C':'#ffa657','F':'#f85149'};
+  const total = Object.values(grades).reduce((a,b)=>a+b,0);
+  const chart = document.getElementById('grade-chart');
+  for(const [g,count] of Object.entries(grades)) {
+    const pct = total > 0 ? Math.round((count/total)*100) : 0;
+    chart.innerHTML += `
+      <div style="text-align:center;min-width:80px;">
+        <div style="font-size:28px;font-weight:700;color:${colors[g]};font-family:'JetBrains Mono',monospace;">${count}</div>
+        <div style="font-size:22px;font-weight:700;color:${colors[g]};">${g}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px;">${pct}%</div>
+        <div style="height:4px;background:${colors[g]};border-radius:2px;margin-top:6px;width:${pct}%;min-width:4px;"></div>
+      </div>`;
+  }
+});
+</script>
+{% endblock %}
